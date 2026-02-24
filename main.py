@@ -2,6 +2,7 @@ import requests
 import json
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 from pyexpat import features
 
@@ -39,3 +40,26 @@ print(df.nlargest(5, 'Magnitude')[['Place', 'Time', 'Magnitude']])
 
 correlation = df['Magnitude'].corr(df['Depth'])
 print(f"\nКореляція між магнітудою та глибиною: {correlation:.2f}")
+
+df['Region'] = df['Place'].str.split(',').str[-1].str.strip()
+top_regions = df['Region'].value_counts().head(5)
+print("\nТоп-5 регіонів за кількістю подій:")
+print(top_regions)
+
+plt.subplot(1, 3, 1)
+plt.hist(df['Magnitude'], bins=15, color='skyblue', edgecolor='black')
+plt.title('Розподіл магнітуд')
+plt.xlabel('Магнітуда')
+
+plt.subplot(1, 3, 2)
+plt.scatter(df['Depth'], df['Magnitude'], alpha=0.5, color='salmon')
+plt.title('Глибина vs Магнітуда')
+plt.xlabel('Глибина (км)')
+plt.ylabel('Магнітуда')
+
+plt.subplot(1, 3, 3)
+top_regions.plot(kind='bar', color='lightgreen')
+plt.title('Топ-5 регіонів')
+plt.ylabel('Кількість')
+
+plt.show()
